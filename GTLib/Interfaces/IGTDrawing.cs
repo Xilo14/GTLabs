@@ -6,5 +6,6 @@ namespace GTLib.Interfaces
 {
     interface IGTDrawing
     {
+        public UInt32 Draw();
     }
 }
