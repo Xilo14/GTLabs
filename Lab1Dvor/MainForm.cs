@@ -18,11 +18,10 @@ namespace Lab1Dvor
             InitializeComponent();
         }
 
-        
-
         private void MainForm_KeyDown(object sender, KeyEventArgs e)
         {
             Debug.WriteLine(e.KeyCode);
+
         }
     }
 }
