@@ -5,6 +5,16 @@ VisualStudioVersion = 16.0.30104.148
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RasterConversionProductivity", "RasterConversionProductivity\RasterConversionProductivity.csproj", "{C8CD6B36-5BEF-4583-9F3C-F3BC1DB2A771}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GTLib", "GTLib\GTLib.csproj", "{E323BE1D-3E92-48E6-B019-95C0BBFBEEAD}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Lab1", "Lab1", "{1554AE1A-DDB3-41BF-81B8-45262B1B6A0A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lab1Dbornik", "Lab1Dbornik\Lab1Dbornik.csproj", "{E54954DC-4042-49B4-A902-3D21D464DD74}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{BDF671C4-02C9-4669-AF41-9065AF7C6BF8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VBitmap", "VBitmap\VBitmap.csproj", "{77E91755-47F3-4903-A848-90CE42509D76}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,9 +25,25 @@ Global
 		{C8CD6B36-5BEF-4583-9F3C-F3BC1DB2A771}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C8CD6B36-5BEF-4583-9F3C-F3BC1DB2A771}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C8CD6B36-5BEF-4583-9F3C-F3BC1DB2A771}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E323BE1D-3E92-48E6-B019-95C0BBFBEEAD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E323BE1D-3E92-48E6-B019-95C0BBFBEEAD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E323BE1D-3E92-48E6-B019-95C0BBFBEEAD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E323BE1D-3E92-48E6-B019-95C0BBFBEEAD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E54954DC-4042-49B4-A902-3D21D464DD74}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E54954DC-4042-49B4-A902-3D21D464DD74}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E54954DC-4042-49B4-A902-3D21D464DD74}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E54954DC-4042-49B4-A902-3D21D464DD74}.Release|Any CPU.Build.0 = Release|Any CPU
+		{77E91755-47F3-4903-A848-90CE42509D76}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{77E91755-47F3-4903-A848-90CE42509D76}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{77E91755-47F3-4903-A848-90CE42509D76}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{77E91755-47F3-4903-A848-90CE42509D76}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{C8CD6B36-5BEF-4583-9F3C-F3BC1DB2A771} = {BDF671C4-02C9-4669-AF41-9065AF7C6BF8}
+		{E54954DC-4042-49B4-A902-3D21D464DD74} = {1554AE1A-DDB3-41BF-81B8-45262B1B6A0A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A7307D7B-FB12-4B6C-88D6-FE331C4C9E11}
