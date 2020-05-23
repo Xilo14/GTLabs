@@ -86,7 +86,8 @@ namespace RasterConversionProductivity
 
         static void ConvertMarshal(Bitmap source, int counter)
         {
-            int width = source.Width, height = source.Height;
+            int width = source.Width,
+                height = source.Height;
             for (int i = 0; i < counter; ++i)
             {
                 Bitmap restored = Rgb.ByteRgbToBitmapMarshal(Rgb.BitmapToByteRgbMarshal(source), width, height);
