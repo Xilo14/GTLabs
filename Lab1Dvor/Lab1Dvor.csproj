@@ -6,4 +6,8 @@
     <UseWindowsForms>true</UseWindowsForms>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\GTLib\GTLib.csproj" />
+  </ItemGroup>
+
 </Project>
