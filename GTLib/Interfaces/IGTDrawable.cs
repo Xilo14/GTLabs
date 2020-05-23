@@ -6,6 +6,6 @@ namespace GTLib.Interfaces
 {
     interface IGTDrawable
     {
-        public bool Draw();
+
     }
 }

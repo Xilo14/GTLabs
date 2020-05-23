@@ -5,9 +5,9 @@ using GTLib.Interfaces;
 
 namespace GTLib.Primitives
 {
-    class Dot2D:IGTDrawable
+    class Line2D:IGTDrawable
     {
-        int X { get; set; }
-        int Y { get; set; }
+        Dot2D start { get; set; }
+        Dot2D finish { get; set; }
     }
 }
