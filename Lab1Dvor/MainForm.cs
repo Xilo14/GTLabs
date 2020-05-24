@@ -21,7 +21,29 @@ namespace Lab1Dvor
         private void MainForm_KeyDown(object sender, KeyEventArgs e)
         {
             Debug.WriteLine(e.KeyCode);
+            switch(e.KeyCode)
+            {
+                case Keys.Up:
+                    break;
 
+                case Keys.Down:
+                    break;
+
+                case Keys.Left:
+                    break;
+
+                case Keys.Right:
+                    break;
+
+                case Keys.Add:
+                    break;
+
+                //case Keys.Down:
+                //    break;
+
+                //case Keys.Down:
+                //    break;
+            }
         }
     }
 }
