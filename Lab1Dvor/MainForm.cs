@@ -35,14 +35,23 @@ namespace Lab1Dvor
                 case Keys.Right:
                     break;
 
+                case Keys.NumPad4:
+                    break;
+
+                case Keys.NumPad6:
+                    break;
+
+                case Keys.PageUp:
+                    break;
+
+                case Keys.Next:
+                    break;
+
                 case Keys.Add:
                     break;
 
-                //case Keys.Down:
-                //    break;
-
-                //case Keys.Down:
-                //    break;
+                case Keys.Subtract:
+                    break;
             }
         }
     }
