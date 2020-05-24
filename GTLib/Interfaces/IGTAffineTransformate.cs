@@ -4,8 +4,7 @@ using System.Text;
 
 namespace GTLib.Interfaces
 {
-    public interface IGTDrawing
+    interface IGTAffineTransformate
     {
-        public void Draw();
     }
 }

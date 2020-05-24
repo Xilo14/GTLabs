@@ -18,5 +18,23 @@ namespace GTLib.Scenes
         {
             _elements = new List<Primitive2D>();
         }
+        public void AddElement(Primitive2D el)
+        {
+            _elements.Add(el);
+        }
+        public void AddElement(IEnumerable<Primitive2D> els)
+        {
+            _elements.AddRange(els);
+        }
+        public void DeleteElement(Primitive2D el)
+        {
+            _elements.Remove(el);
+        }
+        public void DeleteElement(IEnumerable<Primitive2D> els)
+        {
+            foreach(var el in els)
+                _elements.Remove(el);
+        }
+
     }
 }

@@ -5,9 +5,16 @@ using GTLib.Interfaces;
 
 namespace GTLib.Primitives
 {
-    class Dot2D: Primitive2D
+    public class Dot2D: Primitive2D
     {
-        int X { get; set; }
-        int Y { get; set; }
+        public int X { get; set; }
+        public int Y { get; set; }
+
+        public Dot2D(int X,int Y)
+        {
+            this.X = X;
+            this.Y = Y;
+        }
+        public Dot2D() : this(0,0) { }
     }
 }

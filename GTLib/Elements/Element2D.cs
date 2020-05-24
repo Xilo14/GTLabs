@@ -5,7 +5,8 @@ using GTLib.Primitives;
 
 namespace GTLib.Elements
 {
-    abstract class Element2D:Primitive2D
+    public abstract class Element2D:Primitive2D
     {
+        public List<Primitive2D> Primitives { get; protected set; }
     }
 }
