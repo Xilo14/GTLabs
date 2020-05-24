@@ -96,7 +96,7 @@ namespace GTLib.Drawers
 
                 }
             } },
-            {"bruh", (GTDrawerSlow self, Line2D line) => {
+            {"bres", (GTDrawerSlow self, Line2D line) => {
                 int Xd = line.start.X;
                 int Yd = line.start.Y;
                 int Xf = line.finish.X;
