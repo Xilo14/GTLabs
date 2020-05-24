@@ -8,7 +8,7 @@ namespace GTLib.Scenes
 {
     public class Scene2D : Scene,IGTHavingPrimitives2D
     {
-        public List<Primitive2D> _elements;
+        private List<Primitive2D> _elements;
 
         public List<Primitive2D> GetElements()
         {

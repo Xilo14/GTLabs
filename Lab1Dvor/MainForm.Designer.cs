@@ -37,6 +37,8 @@
             this.ClientSize = new System.Drawing.Size(800, 450);
             this.Name = "MainForm";
             this.Text = "Lab1 Graphics";
+            this.Load += new System.EventHandler(this.MainForm_Load);
+            this.Shown += new System.EventHandler(this.MainForm_Shown);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.MainForm_KeyDown);
             this.ResumeLayout(false);
 
