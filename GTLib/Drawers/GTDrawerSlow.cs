@@ -10,7 +10,13 @@ namespace GTLib.Drawers
 {
     class GTDrawerSlow : GTDrawer
     {
-        public string AlgorithmForLine { get; set; } = "Luke";
+        public enum AlgsForLine
+        {
+            Bresenham,
+            Luke,
+        }
+
+        private AlgsForLine CurrentAlgForLine { get; set; } = AlgsForLine.Bresenham;
 
         public new void Draw()
         {
@@ -30,7 +36,10 @@ namespace GTLib.Drawers
                 DrawPrimitive2D(element);
         }
 
-        private Dictionary<Type, DrawMethod> StdDictPrimitives = new Dictionary<Type, DrawMethod>
+       
+
+        private Dictionary<Type, DrawMethod> StdDictPrimitives = 
+            new Dictionary<Type, DrawMethod>
         {
             { typeof(Dot2D), (GTDrawerSlow self,Primitive2D primitive) => {
                 Dot2D dot2d = (Dot2D)primitive;
@@ -38,121 +47,142 @@ namespace GTLib.Drawers
             } },
             { typeof(Line2D), (GTDrawerSlow self,Primitive2D primitive) => {
                 Line2D line2d = (Line2D)primitive;
-                self.AlgsDrawingLines[self.AlgorithmForLine.ToLower()](self,line2d);
+                self.AlgsDrawingLines[self.CurrentAlgForLine](self,line2d);
             } },
             { typeof(Circle2D), (GTDrawerSlow self,Primitive2D primitive) => {
 
             } },
         };
-        private Dictionary<string, AlgorithmDrawingLine> AlgsDrawingLines = new Dictionary<string, AlgorithmDrawingLine>
-        {
-            {"luke", (GTDrawerSlow self, Line2D line)=> {
-                int Xd = line.start.X;
-                int Yd = line.start.Y;
-                int Xf = line.finish.X;
-                int Yf = line.finish.Y;
 
-                int Dx, Dy, Cumul;
-                int Xinc, Yinc, X, Y;
-                int i;
-                X = Xd; Y = Yd;
-                self.bitmap.SetPixel(X,Y,EnvVar.STD_COLOR);
-                if (Xd < Xf) Xinc = 1; else Xinc = -1;
-                if (Yd < Yf) Yinc = 1; else Yinc = -1;
-                Dx = Math.Abs(Xd - Xf);
-                Dy = Math.Abs(Yd - Yf);
-                if (Dx > Dy)
+        private Dictionary<AlgsForLine, AlgorithmDrawingLine> AlgsDrawingLines =
+            new Dictionary<AlgsForLine, AlgorithmDrawingLine>
+            {
                 {
-                    Cumul = Dx / 2;
-                    for (i = 0; i < Dx; i++)
+                    AlgsForLine.Luke, (GTDrawerSlow self, Line2D line) =>
                     {
-                        X = X + Xinc;
-                        Cumul = Cumul + Dy;
-                        if (Cumul >= Dx)
+                        int Xd = line.start.X;
+                        int Yd = line.start.Y;
+                        int Xf = line.finish.X;
+                        int Yf = line.finish.Y;
+
+                        int Dx, Dy, Cumul;
+                        int Xinc, Yinc, X, Y;
+                        int i;
+                        X = Xd;
+                        Y = Yd;
+                        self.bitmap.SetPixel(X, Y, EnvVar.STD_COLOR);
+                        if (Xd < Xf)
+                            Xinc = 1;
+                        else
+                            Xinc = -1;
+                        if (Yd < Yf)
+                            Yinc = 1;
+                        else
+                            Yinc = -1;
+                        Dx = Math.Abs(Xd - Xf);
+                        Dy = Math.Abs(Yd - Yf);
+                        if (Dx > Dy)
                         {
-                            Cumul = Cumul - Dx;
-                            Y = Y + Yinc;
+                            Cumul = Dx / 2;
+                            for (i = 0; i < Dx; i++)
+                            {
+                                X = X + Xinc;
+                                Cumul = Cumul + Dy;
+                                if (Cumul >= Dx)
+                                {
+                                    Cumul = Cumul - Dx;
+                                    Y = Y + Yinc;
+                                }
 
-                        }
-			            //Sleep(10);
-                        self.bitmap.SetPixel(X,Y,EnvVar.STD_COLOR);
-                    }
-                }
-                else
-                {
-                    Cumul = Dy / 2;
-                    for (i = 0; i < Dy; i++)
-                    {
-                        Y += Yinc;
-                        Cumul = Cumul + Dx;
-                        if (Cumul >= Dy)
-                        {
-                            Cumul = Cumul - Dy;
-                            X = X + Xinc;
-                        }
-			            //Sleep(10);
-                        self.bitmap.SetPixel(X,Y,EnvVar.STD_COLOR);
-                    }
-
-                }
-            } },
-            {"bres", (GTDrawerSlow self, Line2D line) => {
-                int Xd = line.start.X;
-                int Yd = line.start.Y;
-                int Xf = line.finish.X;
-                int Yf = line.finish.Y;
-
-                int Dx, Dy, Dx2, Dy2, Dxy, S, Xinc, Yinc, X, Y, i;
-
-                if (Xd < Xf) Xinc = 1; else Xinc = -1;
-
-                if (Yd < Yf) Yinc = 1; else Yinc = -1;
-                Dx = Math.Abs(Xd - Xf);
-                Dy = Math.Abs(Yd - Yf);
-                Dx2 = Dx + Dx;
-                Dy2 = Dy + Dy;
-                X = Xd;
-                Y = Yd;
-                self.bitmap.SetPixel(X,Y,EnvVar.STD_COLOR);
-
-                if (Dx > Dy)
-                {
-                    S = Dy2 - Dx;
-                    Dxy = Dy2 - Dx2;
-                    for (i = 0; i < Dx; i++)
-                    {
-                        if (S >= 0)
-                        {
-                            Y = Y + Yinc;
-                            S = S + Dxy;
+                                //Sleep(10);
+                                self.bitmap.SetPixel(X, Y, EnvVar.STD_COLOR);
+                            }
                         }
                         else
-                            S = S + Dy2;
-
-                        X = X + Xinc;
-                        self.bitmap.SetPixel(X,Y,EnvVar.STD_COLOR);
-                    }
-                }
-                else
-                {
-                    S = Dx2 - Dy;
-                    Dxy = Dx2 - Dy2;
-                    for (i = 0; i < Dy; i++)
-                    {
-                        if (S >= 0)
                         {
-                            X = X + Xinc;
-                            S = S + Dxy;
+                            Cumul = Dy / 2;
+                            for (i = 0; i < Dy; i++)
+                            {
+                                Y += Yinc;
+                                Cumul = Cumul + Dx;
+                                if (Cumul >= Dy)
+                                {
+                                    Cumul = Cumul - Dy;
+                                    X = X + Xinc;
+                                }
+
+                                //Sleep(10);
+                                self.bitmap.SetPixel(X, Y, EnvVar.STD_COLOR);
+                            }
+                        }
+                    }
+                },
+                {
+                    AlgsForLine.Bresenham, (GTDrawerSlow self, Line2D line) =>
+                    {
+                        int Xd = line.start.X;
+                        int Yd = line.start.Y;
+                        int Xf = line.finish.X;
+                        int Yf = line.finish.Y;
+
+                        int Dx, Dy, Dx2, Dy2, Dxy, S, Xinc, Yinc, X, Y, i;
+
+                        if (Xd < Xf)
+                            Xinc = 1;
+                        else
+                            Xinc = -1;
+
+                        if (Yd < Yf)
+                            Yinc = 1;
+                        else
+                            Yinc = -1;
+                        Dx = Math.Abs(Xd - Xf);
+                        Dy = Math.Abs(Yd - Yf);
+                        Dx2 = Dx + Dx;
+                        Dy2 = Dy + Dy;
+                        X = Xd;
+                        Y = Yd;
+                        self.bitmap.SetPixel(X, Y, EnvVar.STD_COLOR);
+
+                        if (Dx > Dy)
+                        {
+                            S = Dy2 - Dx;
+                            Dxy = Dy2 - Dx2;
+                            for (i = 0; i < Dx; i++)
+                            {
+                                if (S >= 0)
+                                {
+                                    Y = Y + Yinc;
+                                    S = S + Dxy;
+                                }
+                                else
+                                    S = S + Dy2;
+
+                                X = X + Xinc;
+                                self.bitmap.SetPixel(X, Y, EnvVar.STD_COLOR);
+                            }
                         }
                         else
-                            S = S + Dx2;
+                        {
+                            S = Dx2 - Dy;
+                            Dxy = Dx2 - Dy2;
+                            for (i = 0; i < Dy; i++)
+                            {
+                                if (S >= 0)
+                                {
+                                    X = X + Xinc;
+                                    S = S + Dxy;
+                                }
+                                else
+                                    S = S + Dx2;
 
-                        Y = Y + Yinc;
-                        self.bitmap.SetPixel(X,Y,EnvVar.STD_COLOR);
+                                Y = Y + Yinc;
+                                self.bitmap.SetPixel(X, Y, EnvVar.STD_COLOR);
+                            }
+                        }
                     }
-                }
-            } },
-        };
+                },
+            };
     }
     delegate void DrawMethod(GTDrawerSlow self, Primitive2D primitive);
     delegate void AlgorithmDrawingLine(GTDrawerSlow self, Line2D line);
