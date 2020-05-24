@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Drawing;
 using System.Text;
 using GTLib.Elements;
 using GTLib.Interfaces;
@@ -8,7 +10,7 @@ using GTLib.Scenes;
 
 namespace GTLib.Drawers
 {
-    class GTDrawerSlow : GTDrawer
+    public class GTDrawerSlow : GTDrawer
     {
         public enum AlgsForLine
         {
@@ -16,12 +18,31 @@ namespace GTLib.Drawers
             Luke,
         }
 
+        public GTDrawerSlow(IGTHavingPrimitives2D scene, Bitmap bitmap)
+            :base( scene, bitmap){}
+        public GTDrawerSlow() : this(new Scene2D(),
+            new Bitmap(EnvVar.STANDART_BMP_WIDTH,
+                EnvVar.STANDART_BMP_HEIGHT)) { }
+        public GTDrawerSlow(IGTHavingPrimitives2D scene) : this(scene, new Bitmap(EnvVar.STANDART_BMP_WIDTH, EnvVar.STANDART_BMP_HEIGHT)) { }
+        public GTDrawerSlow(Bitmap bitmap) : this(new Scene2D(), bitmap) { }
+
         private AlgsForLine CurrentAlgForLine { get; set; } = AlgsForLine.Bresenham;
 
         public new void Draw()
         {
             foreach (var element in scene.GetElements())
                 DrawElement2D(element);
+        }
+
+        public new UInt32 DrawWithMetric()
+        {
+            Stopwatch stopWatch = new Stopwatch();
+            stopWatch.Start();
+
+            this.Draw();
+
+            stopWatch.Stop();
+            return (UInt32)stopWatch.ElapsedMilliseconds;
         }
         private void DrawPrimitive2D(Primitive2D primitive)
         {
