@@ -71,7 +71,33 @@ namespace GTLib.Drawers
                 self.AlgsDrawingLines[self.CurrentAlgForLine](self,line2d);
             } },
             { typeof(Circle2D), (GTDrawerSlow self,Primitive2D primitive) => {
+                Circle2D circle2d = (Circle2D)primitive;
+                int Xc = circle2d.Center.X,
+                    Yc = circle2d.Center.Y;
+                int x = 0;
+                int y = circle2d.Radius;
+                int delta = 1 - 2 * circle2d.Radius;
+                int error = 0;
 
+                while (y >= 0)
+                {
+                    self.bitmap.SetPixel(Xc+x, Yc+y, EnvVar.STD_COLOR);
+                    self.bitmap.SetPixel(Xc + x, Yc - y, EnvVar.STD_COLOR);
+                    self.bitmap.SetPixel(Xc - x, Yc + y, EnvVar.STD_COLOR);
+                    self.bitmap.SetPixel(Xc - x, Yc - y, EnvVar.STD_COLOR);
+                    error = 2 * (delta + y) - 1;
+                    if ((delta < 0) && (error <= 0))
+                    {
+                        delta += 2 * (x++) + 1;
+                        continue;
+                    }
+                    if ((delta > 0) && (error > 0))
+                    {
+                        delta -= 2 * (y--) + 1;
+                        continue;
+                    }
+                    delta += 2 * (x++ - y--);
+                }
             } },
         };
 
