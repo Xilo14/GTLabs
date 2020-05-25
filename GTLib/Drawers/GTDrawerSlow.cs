@@ -26,32 +26,22 @@ namespace GTLib.Drawers
         public GTDrawerSlow(IGTHavingPrimitives2D scene) : this(scene, new Bitmap(EnvVar.STANDART_BMP_WIDTH, EnvVar.STANDART_BMP_HEIGHT)) { }
         public GTDrawerSlow(Bitmap bitmap) : this(new Scene2D(), bitmap) { }
 
-        private AlgsForLine CurrentAlgForLine { get; set; } = AlgsForLine.Bresenham;
+        public AlgsForLine CurrentAlgForLine { get; set; } = AlgsForLine.Bresenham;
 
-        public new void Draw()
+        public override void Draw()
         {
             foreach (var element in scene.GetElements())
                 DrawElement2D(element);
         }
 
-        public new UInt32 DrawWithMetric()
-        {
-            Stopwatch stopWatch = new Stopwatch();
-            stopWatch.Start();
-
-            this.Draw();
-
-            stopWatch.Stop();
-            return (UInt32)stopWatch.ElapsedMilliseconds;
-        }
         private void DrawPrimitive2D(Primitive2D primitive)
         {
-            StdDictPrimitives[primitive.GetType()](this, primitive);
+            _stdDictPrimitives[primitive.GetType()](this, primitive);
         }
         private void DrawElement2D(Primitive2D element)
         {
-            if (element is Element2D)
-                foreach (var el in ((Element2D)element).Primitives)
+            if (element is Element2D element2D)
+                foreach (var el in element2D.Primitives)
                     DrawElement2D(el);
             else
                 DrawPrimitive2D(element);
@@ -59,7 +49,7 @@ namespace GTLib.Drawers
 
        
 
-        private Dictionary<Type, DrawMethod> StdDictPrimitives = 
+        private readonly Dictionary<Type, DrawMethod> _stdDictPrimitives = 
             new Dictionary<Type, DrawMethod>
         {
             { typeof(Dot2D), (GTDrawerSlow self,Primitive2D primitive) => {
@@ -68,14 +58,14 @@ namespace GTLib.Drawers
             } },
             { typeof(Line2D), (GTDrawerSlow self,Primitive2D primitive) => {
                 Line2D line2d = (Line2D)primitive;
-                self.AlgsDrawingLines[self.CurrentAlgForLine](self,line2d);
+                self._algsDrawingLines[self.CurrentAlgForLine](self,line2d);
             } },
             { typeof(Circle2D), (GTDrawerSlow self,Primitive2D primitive) => {
 
             } },
         };
 
-        private Dictionary<AlgsForLine, AlgorithmDrawingLine> AlgsDrawingLines =
+        private readonly Dictionary<AlgsForLine, AlgorithmDrawingLine> _algsDrawingLines =
             new Dictionary<AlgsForLine, AlgorithmDrawingLine>
             {
                 {
