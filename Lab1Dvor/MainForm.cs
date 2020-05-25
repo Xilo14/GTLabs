@@ -13,6 +13,7 @@ using GTLib.Drawers;
 using GTLib.Elements;
 using GTLib.Primitives;
 using GTLib.Scenes;
+using GTLib.Tranformers;
 
 namespace Lab1Dvor
 {
@@ -22,7 +23,10 @@ namespace Lab1Dvor
         private Scene2D scene2d;
         private GTDrawerSlow drawerSlow;
         private Triangle2D DynamicTriangle;
+        private Triangle2D DynamicTriangle2;
         private long _lastTick = System.Environment.TickCount64;
+        private SimpleText2D _text2D;
+        private TransformerRotate trans;
         private Random rnd = new Random(14);
         public MainForm()
         {
@@ -41,16 +45,33 @@ namespace Lab1Dvor
                 new Dot2D(54, 76)));
 
             scene2d.AddElement(DynamicTriangle = new Triangle2D(
-                new Dot2D(13, 65),
-                new Dot2D(125, 67),
-                new Dot2D(87, 213)));
-            for (int i = 0; i < 100; i++)
-                scene2d.AddElement(new Triangle2D(
-                    new Dot2D(rnd.Next(0, this.Width), rnd.Next(0, this.Height)),
-                    new Dot2D(rnd.Next(0, this.Width), rnd.Next(0, this.Height)),
-                    new Dot2D(rnd.Next(0, this.Width), rnd.Next(0, this.Height))));
+                new Dot2D(137, 65),
+                new Dot2D(215, 67),
+                new Dot2D(187, 213)));
+            scene2d.AddElement(DynamicTriangle2 = new Triangle2D(
+                new Dot2D(137, 65),
+                new Dot2D(215, 67),
+                new Dot2D(187, 213)));
+            //for (int i = 0; i < 10; i++)
+            //    scene2d.AddElement(new Triangle2D(
+            //        new Dot2D(rnd.Next(0, this.Width), rnd.Next(0, this.Height)),
+            //        new Dot2D(rnd.Next(0, this.Width), rnd.Next(0, this.Height)),
+            //        new Dot2D(rnd.Next(0, this.Width), rnd.Next(0, this.Height))));
+
+            scene2d.AddElement(new Circle2D(
+                new Dot2D(rnd.Next(200, this.Width-200), rnd.Next(200, this.Height-200)),
+                    rnd.Next(20,200)));
 
 
+            trans = new TransformerRotate(DynamicTriangle.c);
+            trans.Degree = 0.1;
+
+            scene2d.AddElement(_text2D = new SimpleText2D("ЮАД")
+            {
+                Scale = 20,
+                X = 310,
+                Y = 10
+            });
 
         }
 
@@ -105,9 +126,12 @@ namespace Lab1Dvor
 
         private void Cycle()
         {
+            
             DateTime _lastUpdate = DateTime.Now;
             while (true)
             {
+                
+
                 this.bitmap.Dispose();
                 this.bitmap = new Bitmap(this.Width, this.Height);
                 this.drawerSlow.bitmap = this.bitmap;
@@ -116,13 +140,13 @@ namespace Lab1Dvor
                 Debug.WriteLine(ns);
 
                 //Test modify triangle cord #uncomment
-                DynamicTriangle.a.X = rnd.Next(100, 200);
+                //DynamicTriangle.a.X = rnd.Next(100, 200);
 
-                //
-
-                //DynamicTriangle.a = new Dot2D(rnd.Next(100, 200), rnd.Next(100, 200));
-                //DynamicTriangle.b = new Dot2D(rnd.Next(100, 200), rnd.Next(100, 200));
-                //DynamicTriangle.c = new Dot2D(rnd.Next(100, 200), rnd.Next(100, 200));
+                //Move
+                
+                
+                trans.Transform(DynamicTriangle);
+                trans.Transform(_text2D);
 
                 Invoke(new Action(() =>
                 {
@@ -145,7 +169,7 @@ namespace Lab1Dvor
                     }
                 }));
 
-                Thread.Sleep(1000 / 60);
+                Thread.Sleep(1000 / 30);
 
             }
         }
