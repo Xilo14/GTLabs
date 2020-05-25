@@ -24,12 +24,12 @@ namespace GTLib.Drawers
         public GTDrawer(IGTHavingPrimitives2D scene) : this(scene, new Bitmap(EnvVar.STANDART_BMP_WIDTH, EnvVar.STANDART_BMP_HEIGHT)) { }
         public GTDrawer(Bitmap bitmap) : this(new Scene2D(), bitmap) { }
 
-        public void Draw()
+        public virtual void Draw()
         {
             
         }
 
-        public UInt32 DrawWithMetric()
+        public virtual UInt32 DrawWithMetric()
         {
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
@@ -37,11 +37,14 @@ namespace GTLib.Drawers
             this.Draw();
 
             stopWatch.Stop();
-            return (UInt32)stopWatch.ElapsedMilliseconds;
+            //return (UInt32)stopWatch.ElapsedTicks;
+            double seconds = (double)stopWatch.ElapsedTicks / (double)Stopwatch.Frequency;
+            var nanoseconds = seconds * 1000000000;
+            return (UInt32)nanoseconds;
         }
 
-        
-        
+
+
 
     }
     
