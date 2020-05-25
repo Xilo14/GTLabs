@@ -54,7 +54,7 @@ namespace GTLib.Drawers
         {
             { typeof(Dot2D), (GTDrawerSlow self,Primitive2D primitive) => {
                 Dot2D dot2d = (Dot2D)primitive;
-                self.bitmap.SetPixel(dot2d.X,dot2d.Y,EnvVar.STD_COLOR);
+                self.bitmap.SetPixel((int)dot2d.X,(int)dot2d.Y,EnvVar.STD_COLOR);
             } },
             { typeof(Line2D), (GTDrawerSlow self,Primitive2D primitive) => {
                 Line2D line2d = (Line2D)primitive;
@@ -62,11 +62,11 @@ namespace GTLib.Drawers
             } },
             { typeof(Circle2D), (GTDrawerSlow self,Primitive2D primitive) => {
                 Circle2D circle2d = (Circle2D)primitive;
-                int Xc = circle2d.Center.X,
-                    Yc = circle2d.Center.Y;
+                int Xc = (int)circle2d.Center.X,
+                    Yc = (int)circle2d.Center.Y;
                 int x = 0;
-                int y = circle2d.Radius;
-                int delta = 1 - 2 * circle2d.Radius;
+                int y = (int)circle2d.Radius;
+                int delta = 1 - 2 * (int)circle2d.Radius;
                 int error = 0;
 
                 while (y >= 0)
@@ -97,10 +97,10 @@ namespace GTLib.Drawers
                 {
                     AlgsForLine.Luke, (GTDrawerSlow self, Line2D line) =>
                     {
-                        int Xd = line.start.X;
-                        int Yd = line.start.Y;
-                        int Xf = line.finish.X;
-                        int Yf = line.finish.Y;
+                        int Xd = (int)line.start.X;
+                        int Yd = (int)line.start.Y;
+                        int Xf = (int)line.finish.X;
+                        int Yf = (int)line.finish.Y;
 
                         int Dx, Dy, Cumul;
                         int Xinc, Yinc, X, Y;
@@ -157,10 +157,10 @@ namespace GTLib.Drawers
                 {
                     AlgsForLine.Bresenham, (GTDrawerSlow self, Line2D line) =>
                     {
-                        int Xd = line.start.X;
-                        int Yd = line.start.Y;
-                        int Xf = line.finish.X;
-                        int Yf = line.finish.Y;
+                        int Xd = (int)line.start.X;
+                        int Yd = (int)line.start.Y;
+                        int Xf = (int)line.finish.X;
+                        int Yf = (int)line.finish.Y;
 
                         int Dx, Dy, Dx2, Dy2, Dxy, S, Xinc, Yinc, X, Y, i;
 
