@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using GTLib.Elements;
 using GTLib.Interfaces;
 using GTLib.Primitives;
+using GTLib.Scenes;
 
 namespace GTLib.Tranformers
 {
@@ -12,7 +13,7 @@ namespace GTLib.Tranformers
             new Dictionary<Type, TransformMethod>
             {
                 {
-                    typeof(Dot2D), (self,primitive) =>
+                    typeof(Dot2D), (self, primitive) =>
                     {
                         var dot2d = (Dot2D) primitive;
                         dot2d.X += self.MoveX;
@@ -20,7 +21,7 @@ namespace GTLib.Tranformers
                     }
                 },
                 {
-                    typeof(Line2D), (self,primitive )=>
+                    typeof(Line2D), (self, primitive) =>
                     {
                         var line2d = (Line2D) primitive;
                         line2d.start.X += self.MoveX;
@@ -30,7 +31,7 @@ namespace GTLib.Tranformers
                     }
                 },
                 {
-                    typeof(Circle2D),(self,primitive) =>
+                    typeof(Circle2D), (self, primitive) =>
                     {
                         var circle2d = (Circle2D) primitive;
                         circle2d.Center.X += self.MoveX;
@@ -45,12 +46,17 @@ namespace GTLib.Tranformers
         public void Transform(Primitive2D primitive)
         {
             if (primitive is Element2D element2D)
-                foreach (var el in element2D.Primitives)
-                    this.Transform(el);
+                foreach (var el in element2D.DeclarativePrimitives)
+                    Transform(el);
             else
                 _stdDictPrimitives[primitive.GetType()](this, primitive);
         }
+        public void Transform(Scene2D scene)
+        {
+            foreach (var el in scene.GetElements())
+                Transform(el);
+        }
 
-        private delegate void TransformMethod(TransformerMove self,Primitive2D primitive);
+        private delegate void TransformMethod(TransformerMove self, Primitive2D primitive);
     }
 }
