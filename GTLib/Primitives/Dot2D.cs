@@ -8,9 +8,7 @@
             this.Y = Y;
         }
 
-        public Dot2D() : this(0, 0)
-        {
-        }
+        public Dot2D() : this(0, 0) { }
 
         public double X { get; set; }
         public double Y { get; set; }
