@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace GTLib.Primitives
+﻿namespace GTLib.Primitives
 {
     public abstract class Primitive
     {

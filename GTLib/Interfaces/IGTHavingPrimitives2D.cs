@@ -1,7 +1,5 @@
-﻿using GTLib.Primitives;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
+using GTLib.Primitives;
 
 namespace GTLib.Interfaces
 {
