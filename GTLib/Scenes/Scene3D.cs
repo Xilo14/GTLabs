@@ -2,30 +2,24 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Text;
+using GTLib.Cameras;
 using GTLib.Elements;
+using GTLib.Interfaces;
 using GTLib.Primitives;
 
 namespace GTLib.Scenes
 {
-    public class Scene3D
+    public abstract class Scene3D : Scene, IGTHavingPrimitives3D
     {
-        public Model model;
+        public abstract List<Primitive3D> Get3DElements();
+        public Camera Camera { get; set; }
 
-
-        public Scene2D Render()
+        public Scene3D(Camera camera)
         {
-            var scene2d = new Scene2D();
-            
-            foreach (var face in model.f)
-            {
-                scene2d.AddElement(new Triangle2D(
-                    new Dot2D(model.v[(int)(face[0].X)-1].X, model.v[(int)(face[0].X)-1].Y), 
-                    new Dot2D(model.v[(int)(face[1].X)-1].X, model.v[(int)(face[1].X)-1].Y), 
-                    new Dot2D(model.v[(int)(face[2].X)-1].X, model.v[(int)(face[2].X)-1].Y)));
-
-            }
-
-            return scene2d;
+            Camera = camera;
         }
+        public Scene3D() : this(new Camera()) { }
+
+
     }
 }

@@ -15,9 +15,9 @@ namespace GTLib.Scenes
             _elements = new List<Primitive2D>();
         }
 
-        public List<Primitive2D> GetElements()
+        public override List<Primitive> GetElements()
         {
-            return _elements;
+            throw new NotImplementedException();
         }
 
         public void AddElement(Primitive2D el)
@@ -41,5 +41,9 @@ namespace GTLib.Scenes
                 _elements.Remove(el);
         }
 
+        public List<Primitive2D> Get2DElements()
+        {
+            return _elements;
+        }
     }
 }
