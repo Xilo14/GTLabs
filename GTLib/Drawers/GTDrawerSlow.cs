@@ -11,6 +11,9 @@ namespace GTLib.Drawers
 {
     public unsafe class GTDrawerSlow : GTDrawer
     {
+        private int Height = 0;
+        private int Width = 0;
+
         public enum AlgsForLine
         {
             Bresenham,
@@ -220,9 +223,9 @@ namespace GTLib.Drawers
         private bool _bitmapReady;
         private byte[,,] _bytes;
 
-        public GTDrawerSlow(IGTHavingPrimitives2D scene, Bitmap bitmap)
+        public GTDrawerSlow(Scene2D scene2D, Bitmap bitmap)
         {
-            this.scene = scene;
+            this.Scene2D = scene2D;
             Bitmap = bitmap;
         }
 
@@ -232,7 +235,7 @@ namespace GTLib.Drawers
         {
         }
 
-        public GTDrawerSlow(IGTHavingPrimitives2D scene) : this(scene,
+        public GTDrawerSlow(Scene2D scene2D) : this(scene2D,
             new Bitmap(EnvVar.STANDART_BMP_WIDTH, EnvVar.STANDART_BMP_HEIGHT))
         {
         }
@@ -252,6 +255,8 @@ namespace GTLib.Drawers
             set
             {
                 _bitmap = value;
+                this.Height = _bitmap.Height;
+                this.Width = _bitmap.Width;
                 BitmapToByteRgbQ();
             }
         }
@@ -260,9 +265,9 @@ namespace GTLib.Drawers
 
         public override void Draw()
         {
-            //Array.Clear(_bytes, 0, _bytes.Length);
-            _bytes = new byte[3, _bitmap.Height, _bitmap.Width];
-            foreach (var element in scene.GetElements())
+            Array.Clear(_bytes, 0, _bytes.Length);
+            //_bytes = new byte[3, Height, Width];
+            foreach (var element in Scene2D.Get2DElements())
                 DrawElement2D(element);
             _bitmapReady = false;
         }
@@ -328,8 +333,8 @@ namespace GTLib.Drawers
             int width = rgb.GetLength(2),
                 height = rgb.GetLength(1);
 
-            var result = new Bitmap(width, height, PixelFormat.Format24bppRgb);
-
+            var result = _bitmap;//new Bitmap(width, height, PixelFormat.Format24bppRgb);
+            
             var bd = result.LockBits(new Rectangle(0, 0, width, height), ImageLockMode.WriteOnly,
                 PixelFormat.Format24bppRgb);
 
@@ -365,8 +370,8 @@ namespace GTLib.Drawers
 
         private void _setPixelInBytes(int x, int y, Color color)
         {
-            if (y >= _bitmap.Height || y < 0 ||
-                x >= _bitmap.Width || x < 0)
+            if (y >= Height || y < 0 ||
+                x >= Width || x < 0)
                 return;
 
             _bytes[0, y, x] = color.R;
