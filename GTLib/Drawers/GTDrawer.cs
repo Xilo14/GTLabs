@@ -1,11 +1,12 @@
 ﻿using System.Diagnostics;
 using GTLib.Interfaces;
+using GTLib.Scenes;
 
 namespace GTLib.Drawers
 {
     public abstract class GTDrawer : IGTDrawing
     {
-        public IGTHavingPrimitives2D scene { get; set; }
+        public Scene2D Scene2D { get; set; }
 
         public virtual void Draw()
         {
