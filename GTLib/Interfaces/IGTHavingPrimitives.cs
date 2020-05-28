@@ -3,8 +3,8 @@ using GTLib.Primitives;
 
 namespace GTLib.Interfaces
 {
-    public interface IGTHavingPrimitives2D
+    public interface IGTHavingPrimitives
     {
-        public List<Primitive2D> Get2DElements();
+        public List<Primitive> GetElements();
     }
 }
