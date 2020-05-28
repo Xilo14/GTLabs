@@ -46,7 +46,7 @@ namespace Lab1Dvor
         public MainForm()
         {
             InitializeComponent();
-
+            DoubleBuffered = true;
             _bitmap = new Bitmap(this.Width, this.Height);
             _scene2d = new Scene2D();
             _drawerSlow = new GTDrawerSlow(_scene2d, _bitmap)
@@ -194,8 +194,10 @@ namespace Lab1Dvor
                     {
                         var currentTicks = System.Environment.TickCount64;
 
-                        this.BackgroundImage = null;
-                        this.BackgroundImage = _drawerSlow.Bitmap;
+                        //this.BackgroundImage = null;
+                        if (this.BackgroundImage != _drawerSlow.Bitmap)
+                            this.BackgroundImage = _drawerSlow.Bitmap;
+                        this.Refresh();
 
                         if ((DateTime.Now - lastUpdate).Seconds > 0)
                         {
@@ -211,7 +213,7 @@ namespace Lab1Dvor
                 //We set 60 fps, but often frames falling to 20-30, Why?
                 //Because GC want to clear our bytes array. If we use
                 //Array.Clear this program eat all memory. Need fix it.
-                Thread.Sleep(1000 / 60);
+                //Thread.Sleep(1000 / 30);
 
             }
         }
