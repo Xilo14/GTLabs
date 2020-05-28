@@ -53,7 +53,7 @@ namespace GTLib.Tranformers
         }
         public void Transform(Scene2D scene)
         {
-            foreach (var el in scene.GetElements())
+            foreach (var el in scene.Get2DElements())
                 Transform(el);
         }
 
