@@ -49,8 +49,8 @@ namespace Lab1Dvor
             DoubleBuffered = true;
             _bitmap = new Bitmap(this.Width, this.Height);
             _scene2d = new Scene2D();
-            _drawerSlow = new GTDrawerSlow(_scene2d, _bitmap)
-            { CurrentAlgForLine = GTDrawerSlow.AlgsForLine.Luke };
+            _drawerSlow = new GTDrawerSlow(_scene2d, _bitmap);
+            //{ CurrentAlgForLine = GTDrawerSlow.AlgsForLine.Luke };
 
 
             //Adding different elements to scene
@@ -58,6 +58,11 @@ namespace Lab1Dvor
             _scene2d.AddElement(new Dot2D(34, 23));
             _scene2d.AddElement(new Dot2D(344, 243));
             _scene2d.AddElement(new Dot2D(14, 323));
+            _scene2d.AddElement(new FilledTriangle2D(
+                new Dot2D(134, 23),
+                new Dot2D(154, 53),
+                new Dot2D(128, 35),
+                Color.Cyan));
 
             //Lines
             _scene2d.AddElement(_dynamicLine = new Line2D(new Dot2D(187, 213), new Dot2D(227, 213)));
@@ -79,7 +84,7 @@ namespace Lab1Dvor
                 new Dot2D(37, 35),
                 new Dot2D(215, 167),
                 new Dot2D(287, 213)));
-            for (int i = 0; i < 5; i++)
+            for (int i = 0; i < 3; i++)
                 _scene2d.AddElement(new Triangle2D(
                     new Dot2D(_rnd.Next(0, this.Width), _rnd.Next(0, this.Height)),
                     new Dot2D(_rnd.Next(0, this.Width), _rnd.Next(0, this.Height)),
@@ -98,8 +103,8 @@ namespace Lab1Dvor
                 Y = 213
             });
 
-            
 
+            
 
 
             //Initialize transformers
@@ -181,11 +186,8 @@ namespace Lab1Dvor
             DateTime lastUpdate = DateTime.Now;
             while (true)
             {
-                UInt32 ns = _drawerSlow.DrawWithMetric();
+                UInt32 ns = _drawerSlow.ParallelDrawWithMetric();
                 Debug.WriteLine(ns);
-
-                //Test modify triangle cord #uncomment
-                //DynamicTriangle.a.X = rnd.Next(100, 200);
 
 
                 Invoke(new Action(() =>
@@ -194,7 +196,6 @@ namespace Lab1Dvor
                     {
                         var currentTicks = System.Environment.TickCount64;
 
-                        //this.BackgroundImage = null;
                         if (this.BackgroundImage != _drawerSlow.Bitmap)
                             this.BackgroundImage = _drawerSlow.Bitmap;
                         this.Refresh();
@@ -202,7 +203,7 @@ namespace Lab1Dvor
                         if ((DateTime.Now - lastUpdate).Seconds > 0)
                         {
                             this.Text = "Lab1 Graphics " +
-                                        "Elapset time: "+ ns + "нс"
+                                        "Elapsed time: "+ ns + "нс"
                                         + "  Potential FPS:" + 1000000000 / ns
                                         + "  FPS:" + (int)(1000 / (double)(currentTicks - _lastTick));
                             lastUpdate = DateTime.Now;
@@ -210,10 +211,6 @@ namespace Lab1Dvor
                         _lastTick = currentTicks;
                     }
                 }));
-                //We set 60 fps, but often frames falling to 20-30, Why?
-                //Because GC want to clear our bytes array. If we use
-                //Array.Clear this program eat all memory. Need fix it.
-                //Thread.Sleep(1000 / 30);
 
             }
         }
