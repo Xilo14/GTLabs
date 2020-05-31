@@ -38,6 +38,21 @@ namespace GTLib.Tranformers
                         circle2d.Center.Y *= self.ScaleIndex;
                         circle2d.Radius *= self.ScaleIndex;
                     }
+                },
+                {
+                    typeof(FilledTriangle2D), (self, primitive) =>
+                    {
+                        var filledTriangle2D = (FilledTriangle2D) primitive;
+                        Dot2D A = filledTriangle2D.A;
+                        Dot2D B = filledTriangle2D.B;
+                        Dot2D C = filledTriangle2D.C;
+                        A.X *= self.ScaleIndex;
+                        A.Y *= self.ScaleIndex;
+                        B.X *= self.ScaleIndex;
+                        B.Y *= self.ScaleIndex;
+                        C.X *= self.ScaleIndex;
+                        C.Y *= self.ScaleIndex;
+                    }
                 }
             };
 

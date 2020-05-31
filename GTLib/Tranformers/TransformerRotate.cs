@@ -33,6 +33,19 @@ namespace GTLib.Tranformers
                         var circle2d = (Circle2D) primitive;
                         self.RotateDot2D(circle2d.Center);
                     }
+
+                },
+                {
+                    typeof(FilledTriangle2D), (self, primitive) =>
+                    {
+                        var filledTriangle2D = (FilledTriangle2D) primitive;
+                        Dot2D A = filledTriangle2D.A;
+                        Dot2D B = filledTriangle2D.B;
+                        Dot2D C = filledTriangle2D.C;
+                        self.RotateDot2D(A);
+                        self.RotateDot2D(B);
+                        self.RotateDot2D(C);
+                    }
                 }
             };
 

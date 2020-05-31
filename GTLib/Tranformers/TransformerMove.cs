@@ -37,6 +37,22 @@ namespace GTLib.Tranformers
                         circle2d.Center.X += self.MoveX;
                         circle2d.Center.Y += self.MoveY;
                     }
+                    },
+                {
+                    typeof(FilledTriangle2D), (self, primitive) =>
+                    {
+                        var filledTriangle2D = (FilledTriangle2D) primitive;
+                        Dot2D A = filledTriangle2D.A;
+                        Dot2D B = filledTriangle2D.B;
+                        Dot2D C = filledTriangle2D.C;
+                        A.X += self.MoveX;
+                        A.Y += self.MoveY;
+                        B.X += self.MoveX;
+                        B.Y += self.MoveY;
+                        C.X += self.MoveX;
+                        C.Y += self.MoveY;
+
+                    }
                 }
             };
 
