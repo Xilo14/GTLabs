@@ -45,31 +45,5 @@ namespace GTLib.FileParsers.WaveFront
 
             return wireModel;
         }
-        public static FilledTriangleModel ObjFilledTriangleModel(ObjModel objModel)
-        {
-            var Model = new FilledTriangleModel();
-            //генерация списка точек
-            List<Dot3D> DotPool = new List<Dot3D>();
-            foreach (var dot in objModel.vertices)
-            {
-                DotPool.Add(new Dot3D(dot.X, dot.Y, dot.Z));
-            }
-
-            //(ПАРСИМ)преобразование точек в 3угольники
-            foreach (var face in objModel.faces)
-            {
-                if (face.Count > 3)
-                {
-                    throw new Exception("Больше трёх граней");
-                }
-                var Triangle = new Triangle3D(
-                    DotPool[(int)face[0].X - 1],
-                    DotPool[(int)face[1].X - 1],
-                    DotPool[(int)face[2].X - 1]);
-                Model.AddTriangle(Triangle);
-            }
-
-            return Model;
-        }
     }
 }
