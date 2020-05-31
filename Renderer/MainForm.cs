@@ -44,19 +44,19 @@ namespace Renderer
 
             _scene2d = new Scene2D();
             _scene3d = new Scene3DPreviewWireModel();
-            _scene3d.Camera = new OrthogonalCamera()
-            {
-                CursNormal = new Dot3D(0, 0, 0),
-                Position = new Dot3D(3, 0, 0),
-                Top = new Dot3D(3, 1, 0)
-            };
+            _scene3d.Camera = new PerspectiveCamera(
+                new Vector3(3, 0, 0),
+                new Vector3(0, 0, 0),
+                new Vector3(3, 1, 0));
 
             _drawerSlow = new GTDrawerSlow(_scene2d, _bitmap);
             _renderer = new RendererPreviewWireModel(_scene3d, _scene2d);
+
+
         }
         private void MouseWheelHandler(object sender, MouseEventArgs e)
         {
-            
+
             if (e.Delta > 0)
             {
 
@@ -68,10 +68,40 @@ namespace Renderer
             {
                 transScale.ScaleIndex *= 0.909;
             }
-            
+
+        }
+        private void MainForm_KeyDown(object sender, KeyEventArgs e)
+        {
+            Debug.WriteLine(e.KeyCode);//для проверки клавиш
+            switch (e.KeyCode)
+            {
+                case Keys.W:
+                    _scene3d.Camera.MoveAheadBack((float)0.1);
+                    break;
+
+                case Keys.A:
+                    _scene3d.Camera.MoveLeftRight((float)0.1);
+                    break;
+
+                case Keys.S:
+                    _scene3d.Camera.MoveAheadBack((float)-0.1);
+                    break;
+
+                case Keys.D:
+                    _scene3d.Camera.MoveLeftRight((float)-0.1);
+                    break;
+
+                case Keys.ShiftKey:
+                    _scene3d.Camera.MoveUpDown((float)0.1);
+                    break;
+
+                case Keys.ControlKey:
+                    _scene3d.Camera.MoveUpDown((float)-0.1);
+                    break;
+            }
         }
 
-        private void Form1_Shown(object sender, EventArgs e)
+        private void MainForm_Shown(object sender, EventArgs e)
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
 
@@ -112,31 +142,32 @@ namespace Renderer
 
         }
 
-
-
-        private void Form1_MouseDown(object sender, MouseEventArgs e)
+        private void MainForm_MouseDown(object sender, MouseEventArgs e)
         {
+
             if (e.Button == MouseButtons.Left)
             {
                 moveStart = new Point(e.X, e.Y);
             }
         }
 
-        private void Form1_MouseMove(object sender, MouseEventArgs e)
+        private void MainForm_MouseMove(object sender, MouseEventArgs e)
         {
+            
             if ((e.Button & MouseButtons.Left) != 0)
             {
                 Point deltaPos = new Point(e.X - moveStart.X, e.Y - moveStart.Y);
-                RotateDot3D(_scene3d.Camera.Position, deltaPos.X, deltaPos.Y);
-                RotateDot3D(_scene3d.Camera.Top, deltaPos.X, deltaPos.Y);
+                _scene3d.Camera.RotateCamera(deltaPos.X, -deltaPos.Y);
+                //_scene3d.Camera.Eye = RotateDot3D(_scene3d.Camera.Eye, deltaPos.X, deltaPos.Y);
+                //_scene3d.Camera.Up = RotateDot3D(_scene3d.Camera.Up, deltaPos.X, deltaPos.Y);
+                moveStart = new Point(e.X, e.Y);
 
-                
             }
         }
-        private void RotateDot3D(Dot3D dot3d, double degx, double degy)
+        private Vector3 RotateDot3D(Vector3 dot3d, double degx, double degy)
         {
-            var rady = (degy/100) * (Math.PI / 180);
-            var radx = (degx/100) * (Math.PI / 180);
+            var rady = (degy / 100) * (Math.PI / 180);
+            var radx = (degx / 100) * (Math.PI / 180);
 
             Vector3 vector3 = new Vector3(
                 (float)dot3d.X,
@@ -163,9 +194,7 @@ namespace Renderer
 
             vector3 = Vector3.Transform(vector3, matrixY);
             vector3 = Vector3.Transform(vector3, matrixX);
-            dot3d.X = vector3.X;
-            dot3d.Y = vector3.Y;
-            dot3d.Z = vector3.Z;
+            return vector3;
         }
 
         private void Cycle()
@@ -174,39 +203,58 @@ namespace Renderer
             while (true)
             {
                 _renderer.Scene2D.Get2DElements().Clear();
-                _renderer.Render();
+                var nsr = _renderer.RenderWithMetric();
                 _drawerSlow.Scene2D = _renderer.Scene2D;
                 _scene2d = _renderer.Scene2D;
 
-                
-                
-                transScale.Transform(_scene2d);
 
-                var transMove = new TransformerMove();
+
+                //transScale.Transform(_scene2d);
+
+                var transMove = new TransformerMove(); 
                 transMove.MoveX = this.Width / 2;
                 transMove.MoveY = this.Height / 2;
                 transMove.Transform(_scene2d);
 
-                UInt32 ns = _drawerSlow.DrawWithMetric();
-                Debug.WriteLine(ns);
+                UInt32 nsd = _drawerSlow.ParallelDrawWithMetric();
 
+
+
+                float l = 0;
+                var v1 = new Vector2();
+                var v2 = new Vector2();
+                foreach (Line2D el in _scene2d.Get2DElements())
+                {
+                    v1.X = (float)el.start.X;
+                    v1.Y = (float)el.start.Y;
+                    v2.X = (float)el.finish.X;
+                    v2.Y = (float)el.finish.Y;
+
+                    l += (v2 - v1).Length();
+                }
+                Debug.WriteLine(nsr + " - " +
+                                nsd + " : " +
+                                _scene2d.Get2DElements().Count +
+                                "   " + l);
                 Invoke(new Action(() =>
                 {
                     lock (this)
                     {
-                        
+
                         var currentTicks = System.Environment.TickCount64;
 
                         //this.BackgroundImage = null;
                         if (this.BackgroundImage != _drawerSlow.Bitmap)
                             this.BackgroundImage = _drawerSlow.Bitmap;
                         this.Refresh();
-                        
+
                         if ((DateTime.Now - lastUpdate).Seconds > 0)
                         {
                             this.Text = "Lab1 Graphics " +
-                                        "Elapset time: " + ns + "нс"
-                                        + "  Potential FPS:" + 1000000000 / ns
+                                        "Elapsed render time: " + nsr + "нс"
+                                        + "  Potential FPS:" + 1000000000 / nsr +
+                                        "  Elapsed draw time: " + nsd + "нс"
+                                        + "  Potential FPS:" + 1000000000 / nsd
                                         + "  FPS:" + (int)(1000 / (double)(currentTicks - _lastTick));
                             lastUpdate = DateTime.Now;
                         }
