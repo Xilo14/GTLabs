@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Numerics;
+using System.Threading.Tasks;
 using GTLib.Elements;
 using GTLib.Interfaces;
 using GTLib.Primitives;
@@ -176,13 +179,103 @@ namespace GTLib.Drawers
                     typeof(Line2D), (self, primitive) =>
                     {
                         var line2d = (Line2D) primitive;
-                        self._algsDrawingLines[self.CurrentAlgForLine](self, line2d);
+
+                        //check is line outside
+                        if ((line2d.start.X > 0 && line2d.start.X < self.Width &&
+                            line2d.start.Y > 0 && line2d.start.Y < self.Height) &&
+                            (line2d.finish.X > 0 && line2d.finish.X < self.Width &&
+                            line2d.finish.Y > 0 && line2d.finish.Y < self.Height) )
+                        {
+                            self.CurrentAlgorithmDrawingLine(self, line2d);
+
+                        } else if (!((line2d.start.X > 0 && line2d.start.X < self.Width &&
+                                      line2d.start.Y > 0 && line2d.start.Y < self.Height)) &&
+                                   !((line2d.finish.X > 0 && line2d.finish.X < self.Width &&
+                                      line2d.finish.Y > 0 && line2d.finish.Y < self.Height)))
+                        {
+
+                        }else {
+                            Vector2 topleft = new Vector2(0,0);
+                            Vector2 topright = new Vector2(0,self.Width);
+                            Vector2 botleft = new Vector2(self.Height,0);
+                            Vector2 botright = new Vector2(self.Height,self.Width);
+
+                            Vector2 start = new Vector2((float)line2d.start.X,(float)line2d.start.Y);
+                            Vector2 finish = new Vector2((float) line2d.finish.X, (float) line2d.finish.Y);
+
+                            if (((line2d.start.X > 0 && line2d.start.X < self.Width &&
+                                  line2d.start.Y > 0 && line2d.start.Y < self.Height) &&
+                                 !(line2d.finish.X > 0 && line2d.finish.X < self.Width &&
+                                   line2d.finish.Y > 0 && line2d.finish.Y < self.Height)))
+                            {
+                                var result = self.AreCross(start, finish, topleft, topright);
+                                if (result != null)
+                                {
+                                    line2d.finish.X = (double)result?.X;
+                                    line2d.finish.Y = (double)result?.Y;
+                                }else if ((result = self.AreCross(start, finish, topleft, botleft)) != null)
+                                {
+                                    line2d.finish.X = (double)result?.X;
+                                    line2d.finish.Y = (double)result?.Y;
+                                }else if ((result = self.AreCross(start, finish, botright, topright)) != null)
+                                {
+                                    line2d.finish.X = (double)result?.X;
+                                    line2d.finish.Y = (double)result?.Y;
+                                }else if ((result = self.AreCross(start, finish, botright, botleft)) != null)
+                                {
+                                    line2d.finish.X = (double)result?.X;
+                                    line2d.finish.Y = (double)result?.Y;
+                                }
+                                self.CurrentAlgorithmDrawingLine(self, line2d);
+                            }
+                            else if ((!(line2d.start.X > 0 && line2d.start.X < self.Width &&
+                                        line2d.start.Y > 0 && line2d.start.Y < self.Height) &&
+                                      (line2d.finish.X > 0 && line2d.finish.X < self.Width &&
+                                       line2d.finish.Y > 0 && line2d.finish.Y < self.Height)))
+                            {
+                                var result = self.AreCross(start, finish, topleft, topright);
+                                if (result != null)
+                                {
+                                    line2d.start.X = (double)result?.X;
+                                    line2d.start.Y = (double)result?.Y;
+                                }else if ((result = self.AreCross(start, finish, topleft, botleft)) != null)
+                                {
+                                    line2d.start.X = (double)result?.X;
+                                    line2d.start.Y = (double)result?.Y;
+                                }else if ((result = self.AreCross(start, finish, botright, topright)) != null)
+                                {
+                                    line2d.start.X = (double)result?.X;
+                                    line2d.start.Y = (double)result?.Y;
+                                }else if ((result = self.AreCross(start, finish, botright, botleft)) != null)
+                                {
+                                    line2d.finish.X = (double)result?.X;
+                                    line2d.finish.Y = (double)result?.Y;
+                                }
+                                self.CurrentAlgorithmDrawingLine(self, line2d);
+                            }
+
+
+
+                            
+
+                        }
+
+                        //self.CurrentAlgorithmDrawingLine(self, line2d);
+                        //self._algsDrawingLines[self.CurrentAlgForLine](self, line2d);
                     }
                 },
                 {
                     typeof(Circle2D), (self, primitive) =>
                     {
                         var circle2d = (Circle2D) primitive;
+
+                        //check is circle outside
+                        if (circle2d.Center.X - circle2d.Radius >= self.Width ||
+                            circle2d.Center.X + circle2d.Radius <= 0 ||
+                            circle2d.Center.Y - circle2d.Radius >= self.Height ||
+                            circle2d.Center.Y + circle2d.Radius <= 0)
+                            return;
+
                         int Xc = (int) circle2d.Center.X,
                             Yc = (int) circle2d.Center.Y;
                         var x = 0;
@@ -216,6 +309,34 @@ namespace GTLib.Drawers
                             delta += 2 * (x++ - y--);
                         }
                     }
+                },
+                {
+                    typeof(FilledTriangle2D), (self, primitive) =>
+                    {
+                        var filledTriangle2D = (FilledTriangle2D) primitive;
+                        Dot2D A = filledTriangle2D.A;
+                        Dot2D B = filledTriangle2D.B;
+                        Dot2D C = filledTriangle2D.C;
+                        double sy;
+                        double x1,x2;
+                        double tmp;
+
+                       for (sy = A.Y; sy <= C.Y; sy++) {
+                          x1 = A.X + (sy - A.Y) * (C.X - A.X) / (C.Y - A.Y);
+                          if (sy < B.Y)
+                            x2 = A.X + (sy - A.Y) * (B.X - A.X) / (B.Y - A.Y);
+                          else {
+                            if (C.Y == B.Y)
+                              x2 = B.X;
+                            else
+                              x2 = B.X + (sy - B.Y) * (C.X - B.X) / (C.Y - B.Y);
+                          }
+                          if (x1 > x2) { tmp = x1; x1 = x2; x2 = tmp; }
+                          //нарисовать линию
+                          for(int i=(int)x1; i<(int)x2; i++)
+                            self._setPixelInBytes((int) i, (int) sy, filledTriangle2D.Color);
+                       }
+                    }
                 }
             };
 
@@ -225,6 +346,7 @@ namespace GTLib.Drawers
 
         public GTDrawerSlow(Scene2D scene2D, Bitmap bitmap)
         {
+            CurrentAlgForLine = AlgsForLine.Luke;
             this.Scene2D = scene2D;
             Bitmap = bitmap;
         }
@@ -232,8 +354,7 @@ namespace GTLib.Drawers
         public GTDrawerSlow() : this(new Scene2D(),
             new Bitmap(EnvVar.STANDART_BMP_WIDTH,
                 EnvVar.STANDART_BMP_HEIGHT))
-        {
-        }
+        { }
 
         public GTDrawerSlow(Scene2D scene2D) : this(scene2D,
             new Bitmap(EnvVar.STANDART_BMP_WIDTH, EnvVar.STANDART_BMP_HEIGHT))
@@ -261,7 +382,17 @@ namespace GTLib.Drawers
             }
         }
 
-        public AlgsForLine CurrentAlgForLine { get; set; } = AlgsForLine.Bresenham;
+        private AlgsForLine _currentAlgForLine;
+        public AlgsForLine CurrentAlgForLine
+        {
+            get => _currentAlgForLine;
+            set
+            {
+                _currentAlgForLine = value;
+                CurrentAlgorithmDrawingLine = _algsDrawingLines[_currentAlgForLine];
+            }
+        }
+        private AlgorithmDrawingLine CurrentAlgorithmDrawingLine;
 
         public override void Draw()
         {
@@ -270,6 +401,27 @@ namespace GTLib.Drawers
             foreach (var element in Scene2D.Get2DElements())
                 DrawElement2D(element);
             _bitmapReady = false;
+        }
+        public void ParallelDraw()
+        {
+            Array.Clear(_bytes, 0, _bytes.Length);
+            Parallel.ForEach(Scene2D.Get2DElements(), DrawElement2D);
+
+            _bitmapReady = false;
+        }
+
+        public virtual uint ParallelDrawWithMetric()
+        {
+            var stopWatch = new Stopwatch();
+            stopWatch.Start();
+
+            ParallelDraw();
+
+            stopWatch.Stop();
+            //return (UInt32)stopWatch.ElapsedTicks;
+            var seconds = stopWatch.ElapsedTicks / (double)Stopwatch.Frequency;
+            var nanoseconds = seconds * 1000000000;
+            return (uint)nanoseconds;
         }
 
         private void DrawPrimitive2D(Primitive2D primitive)
@@ -301,7 +453,7 @@ namespace GTLib.Drawers
                     byte* _r = _res, _g = _res + width * height, _b = _res + 2 * width * height;
                     for (var h = 0; h < height; h++)
                     {
-                        var curPos = (byte*) bd.Scan0 + h * bd.Stride;
+                        var curPos = (byte*)bd.Scan0 + h * bd.Stride;
                         for (var w = 0; w < width; w++)
                         {
                             *_b = *curPos++;
@@ -334,7 +486,7 @@ namespace GTLib.Drawers
                 height = rgb.GetLength(1);
 
             var result = _bitmap;//new Bitmap(width, height, PixelFormat.Format24bppRgb);
-            
+
             var bd = result.LockBits(new Rectangle(0, 0, width, height), ImageLockMode.WriteOnly,
                 PixelFormat.Format24bppRgb);
 
@@ -346,7 +498,7 @@ namespace GTLib.Drawers
                     byte* _r = _rgb, _g = _rgb + width * height, _b = _rgb + 2 * width * height;
                     for (var h = 0; h < height; h++)
                     {
-                        curpos = (byte*) bd.Scan0 + h * bd.Stride;
+                        curpos = (byte*)bd.Scan0 + h * bd.Stride;
                         for (var w = 0; w < width; w++)
                         {
                             *curpos++ = *_b;
@@ -378,13 +530,57 @@ namespace GTLib.Drawers
             _bytes[1, y, x] = color.G;
             _bytes[2, y, x] = color.B;
         }
-
         private Color _getPixelInBytes(int x, int y)
         {
             return Color.FromArgb(
                 _bytes[0, y, x],
                 _bytes[1, y, x],
                 _bytes[2, y, x]);
+        }
+
+        public Vector2? AreCross(
+            Vector2 v11,
+            Vector2 v12,
+            Vector2 v21,
+            Vector2 v22)
+        {
+            Vector3 v11v3 = new Vector3(v11.X, v11.Y, 1);
+            Vector3 v12v3 = new Vector3(v12.X, v12.Y, 1);
+            Vector3 v21v3 = new Vector3(v21.X, v21.Y, 1);
+            Vector3 v22v3 = new Vector3(v22.X, v22.Y, 1);
+
+            Vector2 v2cut1 = v12 - v11;
+            Vector2 v2cut2 = v22 - v21;
+            Vector3 cut1 = new Vector3(v2cut1.X, v2cut1.Y, 1);
+            Vector3 cut2 = new Vector3(v2cut2.X, v2cut2.Y, 1);
+            Vector3 prod1, prod2;
+
+
+            prod1 = Vector3.Cross(cut1, v21v3 - v11v3);
+            //cross(cut1 * (v21 - v11));
+            prod2 = Vector3.Cross(cut1, v22v3 - v11v3);
+            //prod2 = cross(cut1 * (v22 - v11));
+
+            if (prod1.Z < 0 && prod2.Z < 0 ||
+                prod1.Z >= 0 && prod2.Z >= 0)
+                return null;
+
+            prod1 = Vector3.Cross(cut2, v11v3 - v21v3);
+            prod2 = Vector3.Cross(cut2, v12v3 - v21v3);
+            //prod1 = cross(cut2 * (v11 - v21));
+            //prod2 = cross(cut2 * (v12 - v21));
+
+            if (prod1.Z < 0 && prod2.Z < 0 ||
+                prod1.Z >= 0 && prod2.Z >= 0)
+                return null;
+
+            Vector2 crossing = new Vector2();
+
+            crossing.X = v11.X + cut1.X * Math.Abs(prod1.Z) / Math.Abs(prod2.Z - prod1.Z);
+            crossing.Y = v11.Y + cut1.Y * Math.Abs(prod1.Z) / Math.Abs(prod2.Z - prod1.Z);
+
+
+            return crossing;
         }
 
         private delegate void DrawMethod(GTDrawerSlow self, Primitive2D primitive);
