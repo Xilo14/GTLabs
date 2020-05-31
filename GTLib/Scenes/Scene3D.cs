@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Numerics;
 using System.Text;
 using GTLib.Cameras;
 using GTLib.Elements;
@@ -18,7 +19,7 @@ namespace GTLib.Scenes
         {
             Camera = camera;
         }
-        public Scene3D() : this(new Camera()) { }
+        public Scene3D() : this(new Camera(new Vector3(),new Vector3(),new Vector3()  )) { }
 
 
     }
