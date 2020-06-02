@@ -36,7 +36,7 @@ namespace GTLib.Renderers
             {typeof(PerspectiveCamera), (self) =>
             {
                 var camera = (PerspectiveCamera)self.Scene3D.Camera;
-                Random rnd = new Random();
+                Random rnd = new Random(2);
 
                 Vector3 Position = new Vector3(
                     (float)camera.Eye.X,
