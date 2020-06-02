@@ -313,33 +313,255 @@ namespace GTLib.Drawers
                 {
                     typeof(FilledTriangle2D), (self, primitive) =>
                     {
+                    
                         var filledTriangle2D = (FilledTriangle2D) primitive;
-                        Dot2D A = filledTriangle2D.A;
-                        Dot2D B = filledTriangle2D.B;
-                        Dot2D C = filledTriangle2D.C;
-                        double sy;
-                        double x1,x2;
-                        double tmp;
+                        self.ClipTriangle(filledTriangle2D);
 
-                       for (sy = A.Y; sy <= C.Y; sy++) {
-                          x1 = A.X + (sy - A.Y) * (C.X - A.X) / (C.Y - A.Y);
-                          if (sy < B.Y)
-                            x2 = A.X + (sy - A.Y) * (B.X - A.X) / (B.Y - A.Y);
-                          else {
-                            if (C.Y == B.Y)
-                              x2 = B.X;
-                            else
-                              x2 = B.X + (sy - B.Y) * (C.X - B.X) / (C.Y - B.Y);
-                          }
-                          if (x1 > x2) { tmp = x1; x1 = x2; x2 = tmp; }
-                          //нарисовать линию
-                          for(int i=(int)x1; i<(int)x2; i++)
-                            self._setPixelInBytes((int) i, (int) sy, filledTriangle2D.Color);
-                       }
+
+                       //for (sy = A.Y; sy <= C.Y; sy++) {
+                       //   x1 = A.X + (sy - A.Y) * (C.X - A.X) / (C.Y - A.Y);
+                       //   if (sy < B.Y)
+                       //     x2 = A.X + (sy - A.Y) * (B.X - A.X) / (B.Y - A.Y);
+                       //   else {
+                       //     if (C.Y == B.Y)
+                       //       x2 = B.X;
+                       //     else
+                       //       x2 = B.X + (sy - B.Y) * (C.X - B.X) / (C.Y - B.Y);
+                       //   }
+                       //   if (x1 > x2) { tmp = x1; x1 = x2; x2 = tmp; }
+                       //   //нарисовать линию
+                       //   for(int i=(int)x1; i<(int)x2; i++)
+                       //     self._setPixelInBytes((int) i, (int) sy, filledTriangle2D.Color);
+                       //}
                     }
                 }
             };
+        public void DrawFilledTriangle(Dot2D A, Dot2D B, Dot2D C, Color color)
+        {
+            double sy;
+            double x1, x2;
+            double tmp;
+            for (sy = A.Y; sy <= C.Y; sy++)
+            {
+                x1 = A.X + (sy - A.Y) * (C.X - A.X) / (C.Y - A.Y);
+                if (sy < B.Y)
+                    x2 = A.X + (sy - A.Y) * (B.X - A.X) / (B.Y - A.Y);
+                else
+                {
+                    if (C.Y == B.Y)
+                        x2 = B.X;
+                    else
+                        x2 = B.X + (sy - B.Y) * (C.X - B.X) / (C.Y - B.Y);
+                }
+                if (x1 > x2) { tmp = x1; x1 = x2; x2 = tmp; }
+                //нарисовать линию
+                for (int i = (int)x1; i < (int)x2; i++)
+                    _setPixelInBytes((int)i, (int)sy, color);
+            }
+        }
+        public void ClipTriangle(FilledTriangle2D filledTriangle2D)
+        {
+            Dot2D A = filledTriangle2D.A;
+            Dot2D B = filledTriangle2D.B;
+            Dot2D C = filledTriangle2D.C;
+            Vector2 a = new Vector2((float)filledTriangle2D.A.X, (float)filledTriangle2D.A.Y);
+            Vector2 b = new Vector2((float)filledTriangle2D.B.X, (float)filledTriangle2D.B.Y);
+            Vector2 c = new Vector2((float)filledTriangle2D.C.X, (float)filledTriangle2D.C.Y);
+            Vector2 topleft = new Vector2(0, 0);
+            Vector2 topright = new Vector2(Width, 0);
+            Vector2 botleft = new Vector2(0, Height);
+            Vector2 botright = new Vector2(Width, Height);
 
+            //if ((a.X < 0 && a.X > self.Width && a.Y < 0 && a.Y > self.Height) &&
+            //    (b.X < 0 && b.X > self.Width && b.Y < 0 && b.Y > self.Height) &&
+            //    (c.X < 0 && c.X > self.Width && c.Y < 0 && c.Y > self.Height))
+            //{
+            //    return;
+            //}
+            if ((a.X > 0 && a.X < Width && a.Y > 0 && a.Y < Height) &&
+                (b.X > 0 && b.X < Width && b.Y > 0 && b.Y < Height) &&
+                (c.X > 0 && c.X < Width && c.Y > 0 && c.Y < Height))
+            {
+                DrawFilledTriangle(A, B, C, filledTriangle2D.Color);
+            }
+            var result1 = AreCross(a, b, topleft, topright);
+            var result2 = AreCross(a, b, topleft, topright);
+
+            if (a.X < 0 || a.X > Width || a.Y < 0 || a.Y > Height)
+            {
+                if ((result1 = AreCross(a, b, topleft, botleft)) != null && (result2 = AreCross(a, c, topleft, botleft)) != null)
+                {
+                    Dot2D O = new Dot2D((double)result1?.X, (double)result1?.Y);
+                    Dot2D E = new Dot2D((double)result2?.X, (double)result2?.Y);
+                    DrawFilledTriangle(O, B, C, filledTriangle2D.Color);
+                    DrawFilledTriangle(O, E, C, filledTriangle2D.Color);
+                }
+                if ((result1 = AreCross(a, b, topleft, topright)) != null && (result2 = AreCross(a, c, topleft, topright)) != null)
+                {
+                    Dot2D O = new Dot2D((double)result1?.X, (double)result1?.Y);
+                    Dot2D E = new Dot2D((double)result2?.X, (double)result2?.Y);
+                    DrawFilledTriangle(O, B, C, filledTriangle2D.Color);
+                    DrawFilledTriangle(O, E, C, filledTriangle2D.Color);
+                }
+                if ((result1 = AreCross(a, b, topright, botright)) != null && (result2 = AreCross(a, c, topright, botright)) != null)
+                {
+                    Dot2D O = new Dot2D((double)result1?.X, (double)result1?.Y);
+                    Dot2D E = new Dot2D((double)result2?.X, (double)result2?.Y);
+                    DrawFilledTriangle(O, B, C, filledTriangle2D.Color);
+                    DrawFilledTriangle(O, E, C, filledTriangle2D.Color);
+                }
+                if ((result1 = AreCross(a, b, botright, botleft)) != null && (result2 = AreCross(a, c, botright, botleft)) != null)
+                {
+                    Dot2D O = new Dot2D((double)result1?.X, (double)result1?.Y);
+                    Dot2D E = new Dot2D((double)result2?.X, (double)result2?.Y);
+                    DrawFilledTriangle(O, B, C, filledTriangle2D.Color);
+                    DrawFilledTriangle(O, E, C, filledTriangle2D.Color);
+                }
+            }
+            if (b.X < 0 || b.X > Width || b.Y < 0 || b.Y > Height)
+            {
+                if ((result1 = AreCross(b, a, topleft, botleft)) != null && (result2 = AreCross(b, c, topleft, botleft)) != null)
+                {
+                    Dot2D O = new Dot2D((double)result1?.X, (double)result1?.Y);
+                    Dot2D E = new Dot2D((double)result2?.X, (double)result2?.Y);
+                    DrawFilledTriangle(A, O, C, filledTriangle2D.Color);
+                    DrawFilledTriangle(O, E, C, filledTriangle2D.Color);
+                }
+                if ((result1 = AreCross(b, a, topleft, topright)) != null && (result2 = AreCross(b, c, topleft, topright)) != null)
+                {
+                    Dot2D O = new Dot2D((double)result1?.X, (double)result1?.Y);
+                    Dot2D E = new Dot2D((double)result2?.X, (double)result2?.Y);
+                    DrawFilledTriangle(A, O, C, filledTriangle2D.Color);
+                    DrawFilledTriangle(O, E, C, filledTriangle2D.Color);
+                }
+                if ((result1 = AreCross(b, a, topright, botright)) != null && (result2 = AreCross(b, c, topright, botright)) != null)
+                {
+                    Dot2D O = new Dot2D((double)result1?.X, (double)result1?.Y);
+                    Dot2D E = new Dot2D((double)result2?.X, (double)result2?.Y);
+                    DrawFilledTriangle(A, O, C, filledTriangle2D.Color);
+                    DrawFilledTriangle(O, E, C, filledTriangle2D.Color);
+                }
+                if ((result1 = AreCross(b, a, botright, botleft)) != null && (result2 = AreCross(b, c, botright, botleft)) != null)
+                {
+                    Dot2D O = new Dot2D((double)result1?.X, (double)result1?.Y);
+                    Dot2D E = new Dot2D((double)result2?.X, (double)result2?.Y);
+                    DrawFilledTriangle(A, O, C, filledTriangle2D.Color);
+                    DrawFilledTriangle(O, E, C, filledTriangle2D.Color);
+                }
+            }
+            if (c.X < 0 || c.X > Width || c.Y < 0 || c.Y > Height)
+            {
+                if ((result1 = AreCross(c, b, topleft, botleft)) != null && (result2 = AreCross(a, c, topleft, botleft)) != null)
+                {
+                    Dot2D O = new Dot2D((double)result1?.X, (double)result1?.Y);
+                    Dot2D E = new Dot2D((double)result2?.X, (double)result2?.Y);
+                    DrawFilledTriangle(A, B, O, filledTriangle2D.Color);
+                    DrawFilledTriangle(A, O, E, filledTriangle2D.Color);
+                }
+                if ((result1 = AreCross(c, b, topleft, topright)) != null && (result2 = AreCross(a, c, topleft, topright)) != null)
+                {
+                    Dot2D O = new Dot2D((double)result1?.X, (double)result1?.Y);
+                    Dot2D E = new Dot2D((double)result2?.X, (double)result2?.Y);
+                    DrawFilledTriangle(A, B, O, filledTriangle2D.Color);
+                    DrawFilledTriangle(A, O, E, filledTriangle2D.Color);
+                }
+                if ((result1 = AreCross(c, b, topright, botright)) != null && (result2 = AreCross(a, c, topright, botright)) != null)
+                {
+                    Dot2D O = new Dot2D((double)result1?.X, (double)result1?.Y);
+                    Dot2D E = new Dot2D((double)result2?.X, (double)result2?.Y);
+                    DrawFilledTriangle(A, B, O, filledTriangle2D.Color);
+                    DrawFilledTriangle(A, O, E, filledTriangle2D.Color);
+                }
+                if ((result1 = AreCross(c, b, botright, botleft)) != null && (result2 = AreCross(a, c, botright, botleft)) != null)
+                {
+                    Dot2D O = new Dot2D((double)result1?.X, (double)result1?.Y);
+                    Dot2D E = new Dot2D((double)result2?.X, (double)result2?.Y);
+                    DrawFilledTriangle(A, B, O, filledTriangle2D.Color);
+                    DrawFilledTriangle(A, O, E, filledTriangle2D.Color);
+                }
+            }
+            if ((a.X < 0 || a.X > Width || a.Y < 0 || a.Y > Height) && (b.X < 0 || b.X > Width || b.Y < 0 || b.Y > Height))
+            {
+                if ((result1 = AreCross(b, c, topleft, botleft)) != null && (result2 = AreCross(a, c, topleft, botleft)) != null)
+                {
+                    Dot2D E = new Dot2D((double)result1?.X, (double)result1?.Y);
+                    Dot2D O = new Dot2D((double)result2?.X, (double)result2?.Y);
+                    DrawFilledTriangle(O, E, C, filledTriangle2D.Color);
+                }
+                if ((result1 = AreCross(b, c, topleft, topright)) != null && (result2 = AreCross(a, c, topleft, topright)) != null)
+                {
+                    Dot2D O = new Dot2D((double)result1?.X, (double)result1?.Y);
+                    Dot2D E = new Dot2D((double)result2?.X, (double)result2?.Y);
+                    DrawFilledTriangle(O, E, C, filledTriangle2D.Color);
+                }
+                if ((result1 = AreCross(b, c, topright, botright)) != null && (result2 = AreCross(a, c, topright, botright)) != null)
+                {
+                    Dot2D O = new Dot2D((double)result1?.X, (double)result1?.Y);
+                    Dot2D E = new Dot2D((double)result2?.X, (double)result2?.Y);
+                    DrawFilledTriangle(O, E, C, filledTriangle2D.Color);
+                }
+                if ((result1 = AreCross(b, c, botright, botleft)) != null && (result2 = AreCross(a, c, botright, botleft)) != null)
+                {
+                    Dot2D O = new Dot2D((double)result1?.X, (double)result1?.Y);
+                    Dot2D E = new Dot2D((double)result2?.X, (double)result2?.Y);
+                    DrawFilledTriangle(O, E, C, filledTriangle2D.Color);
+                }
+            }
+            if ((a.X < 0 || a.X > Width || a.Y < 0 || a.Y > Height) && (c.X < 0 || c.X > Width || c.Y < 0 || c.Y > Height))
+            {
+                if ((result1 = AreCross(b, c, topleft, botleft)) != null && (result2 = AreCross(a, b, topleft, botleft)) != null)
+                {
+                    Dot2D O = new Dot2D((double)result1?.X, (double)result1?.Y);
+                    Dot2D E = new Dot2D((double)result2?.X, (double)result2?.Y);
+                    DrawFilledTriangle(E, B, O, filledTriangle2D.Color);
+                }
+                if ((result1 = AreCross(b, c, topleft, topright)) != null && (result2 = AreCross(a, b, topleft, topright)) != null)
+                {
+                    Dot2D O = new Dot2D((double)result1?.X, (double)result1?.Y);
+                    Dot2D E = new Dot2D((double)result2?.X, (double)result2?.Y);
+                    DrawFilledTriangle(E, B, O, filledTriangle2D.Color);
+                }
+                if ((result1 = AreCross(b, c, topright, botright)) != null && (result2 = AreCross(a, b, topright, botright)) != null)
+                {
+                    Dot2D O = new Dot2D((double)result1?.X, (double)result1?.Y);
+                    Dot2D E = new Dot2D((double)result2?.X, (double)result2?.Y);
+                    DrawFilledTriangle(E, B, O, filledTriangle2D.Color);
+                }
+                if ((result1 = AreCross(b, c, botleft, botright)) != null && (result2 = AreCross(a, b, botleft, botright)) != null)
+                {
+                    Dot2D O = new Dot2D((double)result1?.X, (double)result1?.Y);
+                    Dot2D E = new Dot2D((double)result2?.X, (double)result2?.Y);
+                    DrawFilledTriangle(E, B, O, filledTriangle2D.Color);
+                }
+            }
+            if ((c.X < 0 || c.X > Width || c.Y < 0 || c.Y > Height) && (b.X < 0 || b.X > Width || b.Y < 0 || b.Y > Height))
+            {
+                if ((result1 = AreCross(b, a, topleft, botleft)) != null && (result2 = AreCross(a, c, topleft, botleft)) != null)
+                {
+                    Dot2D O = new Dot2D((double)result1?.X, (double)result1?.Y);
+                    Dot2D E = new Dot2D((double)result2?.X, (double)result2?.Y);
+                    DrawFilledTriangle(A, O, E, filledTriangle2D.Color);
+                }
+                if ((result1 = AreCross(b, a, topleft, topright)) != null && (result2 = AreCross(a, c, topleft, topright)) != null)
+                {
+                    Dot2D O = new Dot2D((double)result1?.X, (double)result1?.Y);
+                    Dot2D E = new Dot2D((double)result2?.X, (double)result2?.Y);
+                    DrawFilledTriangle(A, O, E, filledTriangle2D.Color);
+                }
+                if ((result1 = AreCross(b, a, topright, botright)) != null && (result2 = AreCross(a, c, topright, botright)) != null)
+                {
+                    Dot2D O = new Dot2D((double)result1?.X, (double)result1?.Y);
+                    Dot2D E = new Dot2D((double)result2?.X, (double)result2?.Y);
+                    DrawFilledTriangle(A, O, E, filledTriangle2D.Color);
+                }
+                if ((result1 = AreCross(b, a, botright, botleft)) != null && (result2 = AreCross(a, c, botright, botleft)) != null)
+                {
+                    Dot2D O = new Dot2D((double)result1?.X, (double)result1?.Y);
+                    Dot2D E = new Dot2D((double)result2?.X, (double)result2?.Y);
+                    DrawFilledTriangle(A, O, E, filledTriangle2D.Color);
+                }
+            }
+        }
         private Bitmap _bitmap;
         private bool _bitmapReady;
         private byte[,,] _bytes;
@@ -583,7 +805,31 @@ namespace GTLib.Drawers
             return crossing;
         }
 
-        
+        //public void ClipTriangle(Triangle2D triangle2D)
+        //{
+        //    Vector2 a = new Vector2((float)triangle2D.a.X, (float)triangle2D.a.Y);
+        //    Vector2 b = new Vector2((float)triangle2D.b.X, (float)triangle2D.b.Y);
+        //    Vector2 c = new Vector2((float)triangle2D.c.X, (float)triangle2D.c.Y);
+        //    Vector2 topleft = new Vector2(0, 0);
+        //    Vector2 topright = new Vector2(0, Width);
+        //    Vector2 botleft = new Vector2(Height, 0);
+        //    Vector2 botright = new Vector2(Height, Width);
+            
+        //    if ((a.X < 0 && a.X > Width && a.Y < 0 && a.Y > Height) &&
+        //        (b.X < 0 && b.X > Width && b.Y < 0 && b.Y > Height) &&
+        //        (c.X < 0 && c.X > Width && c.Y < 0 && c.Y > Height))
+        //    {
+        //        return;
+        //    }
+        //    if ((a.X > 0 && a.X < Width && a.Y > 0 && a.Y < Height) &&
+        //        (b.X > 0 && b.X < Width && b.Y > 0 && b.Y < Height) &&
+        //        (c.X > 0 && c.X < Width && c.Y > 0 && c.Y < Height))
+        //    {
+        //        Scene2D
+        //    }
+
+
+        //}
 
         private delegate void DrawMethod(GTDrawerSlow self, Primitive2D primitive);
 
