@@ -112,8 +112,11 @@ namespace Demo_FilledTriangle
                 WaveFrontParser wfp = new WaveFrontParser();
                 var objModel = wfp.Parse(openFileDialog.FileName);
 
+
+                GTLib.FileParsers.WaveFront.Converter.DrawNormal = true;
+
                 _scene3d.AddElement(GTLib.FileParsers.WaveFront
-                    .Converter.ObjFilledToTriangleModel(objModel));
+                    .Converter.ObjModelToWireModel(objModel));
 
                 uint nsrend = _renderer.RenderWithMetric();
                 _drawerSlow.Scene2D = _renderer.Scene2D;
