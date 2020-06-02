@@ -5,19 +5,26 @@ using System.Text;
 
 namespace GTLib.Scenes
 {
-    class Scene3DSimple : Scene3D
+    public class Scene3DSimple : Scene3D
     {
+        private List<Primitive3D> _elements;
 
-
-
+        public Scene3DSimple()
+        {
+            _elements = new List<Primitive3D>();
+        }
         public override List<Primitive3D> Get3DElements()
         {
-            throw new NotImplementedException();
+            return _elements;
         }
 
         public override List<Primitive> GetElements()
         {
             throw new NotImplementedException();
+        }
+        public void AddElement(Primitive3D el)
+        {
+            _elements.Add(el);
         }
     }
 }

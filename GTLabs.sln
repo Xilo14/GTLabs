@@ -15,7 +15,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lab1Dvor", "Lab1Dvor\Lab1Dv
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Renderer", "Renderer\Renderer.csproj", "{F938D35E-A85E-4776-ADC3-38190B829696}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GTLib.Tests", "GTLib.Tests\GTLib.Tests.csproj", "{8CCA8010-B7E6-4E72-8898-2FD8BB23BCE1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GTLib.Tests", "GTLib.Tests\GTLib.Tests.csproj", "{8CCA8010-B7E6-4E72-8898-2FD8BB23BCE1}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Demos", "Demos", "{FDB891AD-0D96-4982-8C91-46DDFBEF5148}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Demo FilledTriangle", "Demo FilledTriangle\Demo FilledTriangle.csproj", "{9F04A27A-DC37-455A-B305-047AAAC7EC40}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -43,6 +47,10 @@ Global
 		{8CCA8010-B7E6-4E72-8898-2FD8BB23BCE1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8CCA8010-B7E6-4E72-8898-2FD8BB23BCE1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8CCA8010-B7E6-4E72-8898-2FD8BB23BCE1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9F04A27A-DC37-455A-B305-047AAAC7EC40}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9F04A27A-DC37-455A-B305-047AAAC7EC40}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9F04A27A-DC37-455A-B305-047AAAC7EC40}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9F04A27A-DC37-455A-B305-047AAAC7EC40}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -50,6 +58,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{C8CD6B36-5BEF-4583-9F3C-F3BC1DB2A771} = {BDF671C4-02C9-4669-AF41-9065AF7C6BF8}
 		{9E88B264-09F4-4863-A67D-36DFB16550EB} = {1554AE1A-DDB3-41BF-81B8-45262B1B6A0A}
+		{9F04A27A-DC37-455A-B305-047AAAC7EC40} = {FDB891AD-0D96-4982-8C91-46DDFBEF5148}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A7307D7B-FB12-4B6C-88D6-FE331C4C9E11}

@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 
 namespace GTLib.Elements
@@ -12,7 +13,7 @@ namespace GTLib.Elements
         private Boolean isNormalizedPrimitives;
         private Boolean isNormalizedDeclarativePrimitives;
 
-        private new List<Primitive3D> _primitives = new List<Primitive3D>();
+        private List<Primitive3D> _primitives = new List<Primitive3D>();
         public new List<Primitive3D> Primitives
         {
             get
@@ -24,7 +25,7 @@ namespace GTLib.Elements
 
         }
 
-        private new List<Primitive3D> _declarativePrimitives = new List<Primitive3D>();
+        private List<Primitive3D> _declarativePrimitives = new List<Primitive3D>();
                 public new List<Primitive3D> DeclarativePrimitives
         {
             get
@@ -52,8 +53,8 @@ namespace GTLib.Elements
             isNormalizedDeclarativePrimitives = true;
         }
 
-        public FilledTriangleModel(Dot3D position) : base(position) { }
-        public FilledTriangleModel() : this(new Dot3D(0, 0, 0)) { }
+        public FilledTriangleModel(Vector3 position) : base(position) { }
+        public FilledTriangleModel() : this(new Vector3(0, 0, 0)) { }
 
         public void AddTriangle(Triangle3D triangle)
         {

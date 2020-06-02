@@ -13,7 +13,7 @@ namespace GTLib.Elements
         private Boolean isNormalizedPrimitives;
         private Boolean isNormalizedDeclarativePrimitives;
 
-        private new List<Line3D> _primitives = new List<Line3D>();
+        private List<Line3D> _primitives = new List<Line3D>();
         public new List<Line3D> Primitives
         {
             get
@@ -24,7 +24,7 @@ namespace GTLib.Elements
             }
             
         } 
-        private new List<Dot3D> _declarativePrimitives = new List<Dot3D>();
+        private List<Dot3D> _declarativePrimitives = new List<Dot3D>();
 
         public new List<Dot3D> DeclarativePrimitives
         {
@@ -69,7 +69,7 @@ namespace GTLib.Elements
             isNormalizedDeclarativePrimitives = true;
         }
 
-        public WireModel(Dot3D position) : base(position)
+        public WireModel(Vector3 position) : base(position)
         {
             AddWire(new Line3D(
                 new Dot3D(0,3,0),
@@ -81,6 +81,6 @@ namespace GTLib.Elements
                 new Dot3D(3, 0, 0),
                 new Dot3D(0, 0, 0)));
         }
-        public WireModel() : this(new Dot3D(0,0,0)) { }
+        public WireModel() : this(new Vector3(0,0,0)) { }
     }
 }

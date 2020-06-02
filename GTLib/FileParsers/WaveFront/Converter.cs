@@ -45,7 +45,7 @@ namespace GTLib.FileParsers.WaveFront
 
             return wireModel;
         }
-        public static FilledTriangleModel ObjFilledTriangleModel(ObjModel objModel)
+        public static FilledTriangleModel ObjFilledToTriangleModel(ObjModel objModel)
         {
             var Model = new FilledTriangleModel();
             //генерация списка точек

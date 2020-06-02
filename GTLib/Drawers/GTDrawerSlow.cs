@@ -196,9 +196,9 @@ namespace GTLib.Drawers
 
                         }else {
                             Vector2 topleft = new Vector2(0,0);
-                            Vector2 topright = new Vector2(0,self.Width);
-                            Vector2 botleft = new Vector2(self.Height,0);
-                            Vector2 botright = new Vector2(self.Height,self.Width);
+                            Vector2 topright = new Vector2(self.Width,0);
+                            Vector2 botleft = new Vector2(0,self.Height);
+                            Vector2 botright = new Vector2(self.Width,self.Height);
 
                             Vector2 start = new Vector2((float)line2d.start.X,(float)line2d.start.Y);
                             Vector2 finish = new Vector2((float) line2d.finish.X, (float) line2d.finish.Y);
@@ -582,6 +582,8 @@ namespace GTLib.Drawers
 
             return crossing;
         }
+
+        
 
         private delegate void DrawMethod(GTDrawerSlow self, Primitive2D primitive);
 
