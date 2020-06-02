@@ -336,28 +336,81 @@ namespace GTLib.Drawers
                     }
                 }
             };
-        public void DrawFilledTriangle(Dot2D A, Dot2D B, Dot2D C, Color color)
+        public void DrawFilledTriangle(Dot2D d0, Dot2D d1, Dot2D d2, Color color)
         {
-            double sy;
-            double x1, x2;
-            double tmp;
-            for (sy = A.Y; sy <= C.Y; sy++)
+            //double sy;
+            //double x1, x2;
+            //double tmp;
+            //for (sy = A.Y; sy <= C.Y; sy++)
+            //{
+            //    x1 = A.X + (sy - A.Y) * (C.X - A.X) / (C.Y - A.Y);
+            //    if (x1 is Double.NaN)
+            //    {
+            //        return;
+            //    }
+            //    if (sy < B.Y)
+            //        x2 = A.X + (sy - A.Y) * (B.X - A.X) / (B.Y - A.Y);
+            //    else
+            //    {
+            //        if (C.Y == B.Y)
+            //            x2 = B.X;
+            //        else
+            //            x2 = B.X + (sy - B.Y) * (C.X - B.X) / (C.Y - B.Y);
+            //    }
+            //    if (x1 > x2) { tmp = x1; x1 = x2; x2 = tmp; }
+            //    //нарисовать линию
+            //    for (int i = (int)x1; i < (int)x2; i++)
+            //        _setPixelInBytes((int)i, (int)sy, color);
+            //}
+
+            // sort the vertices, t0, t1, t2 lower-to-upper (bubblesort yay!)
+            Vector2 t0 = new Vector2((float)d0.X, (float)d0.Y);
+            Vector2 t1 = new Vector2((float)d1.X, (float)d1.Y);
+            Vector2 t2 = new Vector2((float)d2.X, (float)d2.Y);
+
+            if (t0.Y > t1.Y) SwapObj(ref t0, ref t1);
+            if (t0.Y > t2.Y) SwapObj(ref t0, ref t2);
+            if (t1.Y > t2.Y) SwapObj(ref t1, ref t2);
+
+            int total_height =(int) (t2.Y - t0.Y);
+            if (total_height == 0) return;
+            for (int y = (int)(t0.Y); y <= t1.Y; y++)
             {
-                x1 = A.X + (sy - A.Y) * (C.X - A.X) / (C.Y - A.Y);
-                if (sy < B.Y)
-                    x2 = A.X + (sy - A.Y) * (B.X - A.X) / (B.Y - A.Y);
-                else
+                int segment_height = (int) (t1.Y - t0.Y + 1);
+                if (segment_height == 0) return;
+                float alpha = (float)(y - t0.Y) / total_height;
+                float beta = (float)(y - t0.Y) / segment_height; // be careful with divisions by zero
+                Vector2 A = t0 + (t2 - t0) * alpha;
+                Vector2 B = t0 + (t1 - t0) * beta;
+                if (A.X > B.X) SwapObj(ref A, ref B);
+                for (int j = (int)(A.X); j <= B.X; j++)
                 {
-                    if (C.Y == B.Y)
-                        x2 = B.X;
-                    else
-                        x2 = B.X + (sy - B.Y) * (C.X - B.X) / (C.Y - B.Y);
+                    _setPixelInBytes((int)j, (int)y, color);
+                    //image.set(j, y, color); // attention, due to int casts t0.y+i != A.y
                 }
-                if (x1 > x2) { tmp = x1; x1 = x2; x2 = tmp; }
-                //нарисовать линию
-                for (int i = (int)x1; i < (int)x2; i++)
-                    _setPixelInBytes((int)i, (int)sy, color);
             }
+            for (int y = (int)(t1.Y); y <= t2.Y; y++)
+            {
+                int segment_height = (int)(t2.Y - t1.Y + 1);
+                if (segment_height == 0) return;
+                float alpha = (float)(y - t0.Y) / total_height;
+                float beta = (float)(y - t1.Y) / segment_height; // be careful with divisions by zero
+                Vector2 A = t0 + (t2 - t0) * alpha;
+                Vector2 B = t1 + (t2 - t1) * beta;
+                if (A.X > B.X) SwapObj(ref A, ref B);
+                for (int j = (int)(A.X); j <= B.X; j++)
+                {
+                    _setPixelInBytes((int)j, (int)y, color);
+                    //image.set(j, y, color); // attention, due to int casts t0.y+i != A.y
+                }
+            }
+        }
+
+        private void SwapObj(ref Vector2 a, ref Vector2 b)
+        {
+            var tmp = a;
+            a = b;
+            b = tmp;
         }
         public void ClipTriangle(FilledTriangle2D filledTriangle2D)
         {
