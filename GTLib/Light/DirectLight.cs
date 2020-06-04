@@ -5,10 +5,8 @@ using System.Text;
 
 namespace GTLib.Light
 {
-    class DirectLight : Light
+    public class DirectLight : Light
     {
-        private Vector3 _lightVector;
-
-        public Vector3 LightVector { get => _lightVector; set => _lightVector = value; }
+        public Vector3 LightVector { get ; set ; } = new Vector3(0,0,-1);
     }
 }

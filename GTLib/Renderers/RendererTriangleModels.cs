@@ -168,6 +168,20 @@ namespace GTLib.Renderers
                         c.Y = (float)triangle.c.Y;
                         c.Z = (float)triangle.c.Z;
                         c.W = 1;
+
+                        ///Считаем свет
+                        
+                            Vector3 currentTriangleNormal = Vector3.Normalize(Vector3.Cross((a - b).Xyz,(c - b).Xyz));
+                            var coefLight = Vector3.Dot(currentTriangleNormal , self.Scene3D.DirectLight.LightVector); 
+                            if (coefLight < 0)
+                                continue;
+                            var color = Color.FromArgb(
+                                (int)(255 * coefLight),
+                                (int)(255 * coefLight),
+                                (int)(255 * coefLight));
+                        ///Закончили
+
+
                         //1)Переход в мировую систему координат
                         //Mw = So * Ro * To = S * Rox * Roy * Roz * To
                         //Посчитанно вне цикла
@@ -222,16 +236,17 @@ namespace GTLib.Renderers
 
 
                             self.Scene2D.AddElement(new FilledTriangle2D(
-                                new Dot2D(a.X,a.Y),
-                                new Dot2D(b.X,b.Y),
-                                new Dot2D(c.X,c.Y),
-                                Color.FromArgb(1,
-                                    rnd.Next(256),
-                                    rnd.Next(256),
-                                    rnd.Next(256))));
+                                new Dot2D(a.X, a.Y),
+                                new Dot2D(b.X, b.Y),
+                                new Dot2D(c.X, c.Y),
+                                color));
+                            //Color.FromArgb(1,
+                            //    rnd.Next(256),
+                            //    rnd.Next(256),
+                            //    rnd.Next(256))));
                         }
 
-                        
+
                     }
 
                     }

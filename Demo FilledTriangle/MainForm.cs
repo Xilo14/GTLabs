@@ -116,7 +116,7 @@ namespace Demo_FilledTriangle
                 GTLib.FileParsers.WaveFront.Converter.DrawNormal = true;
 
                 _scene3d.AddElement(GTLib.FileParsers.WaveFront
-                    .Converter.ObjModelToWireModel(objModel));
+                    .Converter.ObjFilledToTriangleModel(objModel));
 
                 uint nsrend = _renderer.RenderWithMetric();
                 _drawerSlow.Scene2D = _renderer.Scene2D;
@@ -212,7 +212,7 @@ namespace Demo_FilledTriangle
                 //transMove.MoveY = this.Height / 2;
                 //transMove.Transform(_scene2d);
 
-                UInt32 nsd = _drawerSlow.ParallelDrawWithMetric();
+                UInt32 nsd = _drawerSlow.DrawWithMetric();
 
 
 
